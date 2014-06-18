@@ -9,7 +9,15 @@ angular.module('worldCupStandingsApp', [
     $routeProvider
       .when('/', {
         templateUrl: 'partials/leaderboard',
-        controller: 'LeaderboardCtrl'
+        controller: 'LeaderboardCtrl',
+        resolve : {
+          rounds : function(Rounds){
+            return Rounds.master().$promise;
+          },
+          users : function(User){
+            return User.list().$promise;
+          }
+        }
       })
       .when('/user/:username',{
         templateUrl: 'partials/useradmin',

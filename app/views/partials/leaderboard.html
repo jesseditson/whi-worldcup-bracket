@@ -1,0 +1,8 @@
+<h1>Leaderboard</h1>
+
+<ul>
+  <li ng-repeat="user in users">
+    <a ng-href="/user/{{user.username}}"><h2 ng-bind="user.name"></h2></a>
+    <h4 ng-bind="user.points"></h4>
+  </li>
+</ul>

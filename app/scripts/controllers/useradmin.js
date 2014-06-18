@@ -152,7 +152,7 @@ angular.module('worldCupStandingsApp')
         var creating = $routeParams.username === 'new';
         User[creating ? 'create' : 'update']($scope.user).$promise.then(function(resource){
           if(creating){
-            $location.path('/admin/user/' + resource.username);
+            $location.path('/user/' + resource.username);
           } else {
             $scope.unsaved = false;
           }
@@ -170,13 +170,13 @@ angular.module('worldCupStandingsApp')
         var err = (info.data && info.data.err) || 'Unknown user.';
         alert(err);
       });
+      $scope.$watch('user', function() {
+        $scope.unsaved = true;
+        $scope.saveUser();
+      }, true);
     } else {
       $scope.newUser = true;
       $scope.user = { rounds : defaultRounds };
       initialize();
     }
-    $scope.$watch('user', function() {
-      $scope.unsaved = true;
-      $scope.saveUser();
-    }, true);
   });

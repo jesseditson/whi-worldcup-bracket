@@ -2,7 +2,12 @@
 
 angular.module('worldCupStandingsApp')
   .factory('User', ['$resource', function ($resource) {
-    return $resource('/api/users/:userame', {}, { //parameters default
+    return $resource('/api/users/:userame', {}, {
+      list: {
+        method: 'GET',
+        params: {username : 'all'},
+        isArray: true
+      },
       update: {
         method: 'PUT',
         params: {}

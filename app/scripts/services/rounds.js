@@ -255,4 +255,12 @@ angular.module('worldCupStandingsApp')
       }
       return string;
     };
-  });
+  })
+  .factory('Rounds', ['$resource', function ($resource) {
+    return $resource('/api/rounds', {}, {
+      master: {
+        method: 'GET',
+        params: {}
+      }
+    });
+  }]);
