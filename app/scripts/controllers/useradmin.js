@@ -27,7 +27,7 @@ var defaultRounds = { 32 : {}, 16 : {
 } };
 
 angular.module('worldCupStandingsApp')
-  .controller('UseradminCtrl', function ($scope, $http, $routeParams, RoundInfo, User, $location) {
+  .controller('UseradminCtrl', ['$scope', '$http', '$routeParams', 'RoundInfo', 'User', '$location',function ($scope, $http, $routeParams, RoundInfo, User, $location) {
     $scope.unsaved = true;
     var initialize = function(){
       $scope.rounds = RoundInfo;
@@ -190,4 +190,4 @@ angular.module('worldCupStandingsApp')
       $scope.user = { rounds : defaultRounds };
       initialize();
     }
-  });
+  }]);

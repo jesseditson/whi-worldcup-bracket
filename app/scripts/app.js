@@ -5,18 +5,18 @@ angular.module('worldCupStandingsApp', [
   'ngSanitize',
   'ngRoute'
 ])
-  .config(function ($routeProvider, $locationProvider) {
+  .config(['$routeProvider','$locationProvider',function ($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'partials/leaderboard',
         controller: 'LeaderboardCtrl',
         resolve : {
-          rounds : function(Rounds){
+          rounds : ['Rounds',function(Rounds){
             return Rounds.master().$promise;
-          },
-          users : function(User){
+          }],
+          users : ['User',function(User){
             return User.list().$promise;
-          }
+          }]
         }
       })
       .when('/user/:username',{
@@ -32,4 +32,4 @@ angular.module('worldCupStandingsApp', [
       });
 
     $locationProvider.html5Mode(true);
-  });
+  }]);

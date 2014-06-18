@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('worldCupStandingsApp')
-  .controller('LeaderboardCtrl', function ($scope, $http, users, rounds) {
+  .controller('LeaderboardCtrl', ['$scope','$http','users','rounds',function ($scope, $http, users, rounds) {
     users = users.map(function(user){
       user.points = 0;
       return user;
@@ -30,4 +30,4 @@ angular.module('worldCupStandingsApp')
     $scope.users = users.sort(function(a,b){
       return a.points < b.points;
     });
-  });
+  }]);
