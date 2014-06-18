@@ -17,7 +17,9 @@ var Rounds = mongoose.model('Rounds');
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var config = require(path.join(__dirname, '../lib/config/config'));
-var db = mongoose.connect(config.mongo.uri, config.mongo.options);
+if(!mongoose.connection.db){
+  mongoose.connect(config.mongo.uri, config.mongo.options);
+}
 var teamMap = {
   '09B8CB53-BB56-4B7E-86BD-EC7FC7CEAF33' : 'bra',
   'A0CD1355-B6FC-48D3-B67B-AF5AA2B2C1E1' : 'cro',
@@ -53,7 +55,10 @@ var teamMap = {
   '8D6EAC04-14E9-4026-BF2A-AB81C4F3C529' : 'kor'
 };
 
-var updateScores = function(){
+var cli = require.main === module;
+
+var updateScores = function(cb){
+  if(cli){ console.log('updating...'); }
   request('http://worldcup.kimonolabs.com/api/matches?apikey=bda7915d7e614641230a2e1ad896985c',function(err,res,body){
     if (err) {
       console.log('error:',err);
@@ -63,15 +68,26 @@ var updateScores = function(){
         matches.forEach(function(match){
           var teamA = teamMap[match.awayTeamId];
           var teamB = teamMap[match.homeTeamId];
+          console.log('home',teamB,'away',teamB,match);
           if(match.status !== 'Pre-game'){
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
           }
         });
-        rounds.save();
+        rounds.save(function(err){
+          if(cli){
+            console.log('updated.');
+          } else if(cb) {
+            cb(err);
+          }
+        });
       });
     }
   });
 };
 
-updateScores();
+if(require.main === module) {
+  updateScores();
+} else {
+  module.exports = updateScores;
+}
