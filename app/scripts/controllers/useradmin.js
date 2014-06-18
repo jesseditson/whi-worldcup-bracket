@@ -27,13 +27,13 @@ var defaultRounds = { 32 : {}, 16 : {
 } };
 
 angular.module('worldCupStandingsApp')
-  .controller('UseradminCtrl', function ($scope, $http, $routeParams, Rounds, User, $location) {
+  .controller('UseradminCtrl', function ($scope, $http, $routeParams, RoundInfo, User, $location) {
     $scope.unsaved = true;
     var initialize = function(){
-      $scope.rounds = Rounds;
+      $scope.rounds = RoundInfo;
       $scope.groups = ['A','B','C','D','E','F','G','H'].map(function(group){
         if(!$scope.user.rounds[32][group]){
-          var groupInfo = Rounds.rounds[32][group];
+          var groupInfo = RoundInfo.rounds[32][group];
           $scope.user.rounds[32][group] = Object.keys(groupInfo).reduce(function(o,p){
             o[p] = {};
             o[p][groupInfo[p][0]] = 0;
@@ -41,7 +41,7 @@ angular.module('worldCupStandingsApp')
             return o;
           },{});
         }
-        return {'group' : group, 'rounds' : Rounds.rounds[32][group]};
+        return {'group' : group, 'rounds' : RoundInfo.rounds[32][group]};
       });
     };
 
@@ -57,7 +57,7 @@ angular.module('worldCupStandingsApp')
 
     var groupPositions = function(group){
       group = group.toUpperCase();
-      var groupInfo = Rounds.rounds[32][group];
+      var groupInfo = RoundInfo.rounds[32][group];
       var standings = {};
       var groupScores = $scope.user.rounds[32][group];
       Object.keys(groupInfo).forEach(function(c){
@@ -91,12 +91,23 @@ angular.module('worldCupStandingsApp')
         var pointsB = standingPoints(teamB);
         if(pointsA === pointsB){
           // differential matters
-          return differential(teamB) - differential(teamA);
+          var diff = differential(teamB) - differential(teamA);
+          if(diff === 0){
+            // GF matters
+            var goals = teamB.GF - teamA.GF;
+            if(goals === 0){
+              console.warn('standings for',A,B,'are exactly tied, cannot compute a winner.');
+            }
+            return goals;
+          } else {
+            return diff;
+          }
         } else {
           return pointsB - pointsA;
         }
         return ;
       });
+      console.log(standings);
       return positions;
     };
     var round16Team = $scope.round16Team = function(team){

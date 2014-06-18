@@ -16,11 +16,13 @@ angular.module('worldCupStandingsApp')
           var userScores = user.rounds[32][group][match];
           if(userScores[teams[0]] === realScores[teams[0]] && userScores[teams[1]] === realScores[teams[1]]){
             user.points += 1;
+            console.log(user.name,'exact : ',match,'('+user.points+')');
           }
           var userWinner = userScores[teams[0]] === userScores[teams[1]] ? -1 : userScores[teams[0]] > userScores[teams[1]] ? 0 : 1;
           var realWinner = realScores[teams[0]] === realScores[teams[1]] ? -1 : realScores[teams[0]] > realScores[teams[1]] ? 0 : 1;
           if(userWinner === realWinner){
             user.points += 1;
+            console.log(user.name,'winner : ',match,'('+user.points+')');
           }
         });
       });

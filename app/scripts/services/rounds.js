@@ -132,7 +132,7 @@ var teams = {
 };
 
 angular.module('worldCupStandingsApp')
-  .service('Rounds', function Rounds() {
+  .service('RoundInfo', function() {
     return {
       'teams' : teams,
       'rounds' : {
