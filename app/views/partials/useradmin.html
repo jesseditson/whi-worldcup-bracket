@@ -1,0 +1,51 @@
+<h1>User{{unsaved ? " (unsaved)" : ""}}</h1>
+<form class="user-form">
+  <pre>Name: <input type="text" ng-model="user.name"/></pre>
+  <pre>Avatar: <input type="text" ng-model="user.avatar"/></pre>
+  <pre>Username: <input type="text" ng-model="user.username"/></pre><a ng-if="newUser" ng-click="saveUser()">(save)</a>
+  <div ng-repeat="group in groups">
+    <h3>Group {{group.group}}</h3>
+    <ul>
+      <li ng-if="user" ng-repeat="match in group.rounds">
+        <pre><img ng-src="{{match[0] | teamImage}}"/>
+          <span ng-bind-html="match[0] | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[32][group.group][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[32][group.group][match[0] + '-' + match[1]][match[1]]"/> {{match[1] | unabbreviate}}
+          <img ng-src="{{match[1] | teamImage}}"/>
+        </pre>
+      </li>
+    </ul>
+  </div>
+  <h2>Round of 16</h2>
+  <div ng-if="user" ng-repeat="match in rounds.rounds[16]">
+    <pre>
+      <img ng-src="{{round16Team(match[0]) | teamImage}}"/>
+      <span ng-bind-html="round16Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[1]]"/> {{round16Team(match[1]) | unabbreviate}}
+      <img ng-src="{{round16Team(match[1]) | teamImage}}"/>
+    </pre>
+  </div>
+  <h2>Quarterfinal</h2>
+  <div ng-if="user" ng-repeat="match in rounds.rounds[8]">
+    <pre>
+      <img ng-src="{{round8Team(match[0]) | teamImage}}"/>
+      <span ng-bind-html="round8Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[1]]"/> {{round8Team(match[1]) | unabbreviate}}
+      <img ng-src="{{round8Team(match[1]) | teamImage}}"/>
+    </pre>
+  </div>
+  <h2>Semifinal</h2>
+  <div ng-if="user" ng-repeat="match in rounds.rounds[4]">
+    <pre>
+      <img ng-src="{{round4Team(match[0]) | teamImage}}"/>
+      <span ng-bind-html="round4Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[1]]"/> {{round4Team(match[1]) | unabbreviate}}
+      <img ng-src="{{round4Team(match[1]) | teamImage}}"/>
+    </pre>
+  </div>
+  <h2>Final</h2>
+  <div ng-if="user" ng-repeat="match in rounds.rounds[2]">
+    <pre>
+      <img ng-src="{{round2Team(match[0]) | teamImage}}"/>
+      <span ng-bind-html="round2Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[1]]"/> {{round2Team(match[1]) | unabbreviate}}
+      <img ng-src="{{round2Team(match[1]) | teamImage}}"/>
+    </pre>
+  </div>
+</form>
+
+<!--<pre>{{user | json}}</pre>-->
