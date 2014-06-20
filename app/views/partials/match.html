@@ -1,4 +1,4 @@
-<table id="matchtable">
+<table ng-if="single" id="matchtable">
   <thead>
     <tr>
       <th>
@@ -17,6 +17,14 @@
       <td ng-bind="user.teamA.score">
       <td class="name">{{user.name}}<span ng-if="name != 'Actual' && user.points > 0"> +{{user.points}}</span></td>
       <td ng-bind="user.teamB.score">
+    </tr>
+  </tbody>
+</table>
+
+<table ng-if="!single" id="matchtable">
+  <tbody>
+    <tr ng-repeat="link in links">
+      <td style="text-align:center;"><a ng-href="{{link.link}}">{{link.teamA | unabbreviate}} vs. {{link.teamB | unabbreviate}}</a></td>
     </tr>
   </tbody>
 </table>

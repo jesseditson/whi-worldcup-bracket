@@ -27,6 +27,18 @@ angular.module('worldCupStandingsApp', [
         templateUrl: 'partials/useradmin',
         controller: 'UseradminCtrl'
       })
+      .when('/matches',{
+        templateUrl: 'partials/match',
+        controller: 'MatchCtrl',
+        resolve : {
+          rounds : ['Rounds',function(Rounds){
+            return Rounds.master().$promise;
+          }],
+          users : function(){
+            return [];
+          }
+        }
+      })
       .when('/match/:round/:teams',{
         templateUrl: 'partials/match',
         controller: 'MatchCtrl',
