@@ -7,8 +7,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <base href="/">
-    <title></title>
-    <meta name="description" content="">
+    <title>WHI World Cup Pool</title>
+  	<meta name="description" content="WHI World Cup Pool">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(app) styles/vendor.css -->
@@ -17,12 +17,17 @@
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+  	<link rel="stylesheet" href="styles/styles.css">
     <!-- endbuild -->
   </head>
   <body ng-app="worldCupStandingsApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+    <header class="masthead">
+  		<h1><span>We Heart It</span></h1>
+  		<h2>2014 World Cup</h2>
+  	</header>
 
     <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
@@ -37,6 +42,11 @@
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
     </script>
+
+    <!-- Footer -->
+  	<footer class="footer">
+  		<p>&copy; 2014 König Ditsonius Enterprises, Inc.</p>
+  	</footer><!-- .f1 -->
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -55,7 +65,6 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/navbar.js"></script>
         <script src="scripts/controllers/userAdmin.js"></script>
         <script src="scripts/services/user.js"></script>

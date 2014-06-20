@@ -22,6 +22,8 @@ var defaultRounds = { 32 : {}, 16 : {
 }, 4 : {
   '1a2b1c2d-1e2f1g2h' : {},
   '1b2a1d2c-1f2e1h2g' : {}
+}, 3 : {
+  'a-b' : {}
 }, 2 : {
   '1a2b1c2d1e2f1g2h-1b2a1d2c1f2e1h2g' : {}
 } };
@@ -96,7 +98,8 @@ angular.module('worldCupStandingsApp')
             // GF matters
             var goals = teamB.GF - teamA.GF;
             if(goals === 0){
-              console.warn('standings for',A,B,'are exactly tied, cannot compute a winner.');
+              console.warn('standings for',A,B,'are exactly tied, but we do not support computing team v team scores yet.');
+              console.log(groupScores[A + '-' + B]);
             }
             return goals;
           } else {

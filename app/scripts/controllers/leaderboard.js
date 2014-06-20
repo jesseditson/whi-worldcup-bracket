@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('worldCupStandingsApp')
-  .controller('LeaderboardCtrl', ['$scope','$http','users','rounds',function ($scope, $http, users, rounds) {
+  .controller('LeaderboardCtrl', ['$scope','$http','users','rounds','$location',function ($scope, $http, users, rounds, $location) {
     var reloadPoints = function(){
       users = users.map(function(user){
         user.points = 0;
@@ -31,13 +31,16 @@ angular.module('worldCupStandingsApp')
       });
       $scope.users = users.sort(function(a,b){
         return a.points < b.points;
+      }).map(function(user,index){
+        user.position = index + 1;
+        return user;
       });
     };
     reloadPoints();
     $scope.reloadScores = function(){
       $http({method: 'GET', url: '/api/reloadStandings'}).
         success(function() {
-          reloadPoints();
+          $location.path('/');
         }).
         error(function(data) {
           alert(data || 'error reloading scores...');

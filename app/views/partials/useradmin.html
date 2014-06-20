@@ -19,6 +19,10 @@
     <pre>
       <img ng-src="{{round16Team(match[0]) | teamImage}}"/>
       <span ng-bind-html="round16Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[1]]"/> {{round16Team(match[1]) | unabbreviate}}
+      <pre ng-if="user.rounds[16][match[0] + '-' + match[1]][match[0]] == user.rounds[16][match[0] + '-' + match[1]][match[1]]">
+        <p>Penalties:</p>
+        <span ng-bind-html="round16Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[0] + 'p']"/> : <input type="num" size="2" ng-model="user.rounds[16][match[0] + '-' + match[1]][match[1] + 'p']"/> {{round16Team(match[1]) | unabbreviate}}
+      </pre>
       <img ng-src="{{round16Team(match[1]) | teamImage}}"/>
     </pre>
   </div>
@@ -27,6 +31,10 @@
     <pre>
       <img ng-src="{{round8Team(match[0]) | teamImage}}"/>
       <span ng-bind-html="round8Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[1]]"/> {{round8Team(match[1]) | unabbreviate}}
+      <pre ng-if="user.rounds[8][match[0] + '-' + match[1]][match[0]] == user.rounds[8][match[0] + '-' + match[1]][match[1]]">
+        <p>Penalties:</p>
+        <span ng-bind-html="round8Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[0] + 'p']"/> : <input type="num" size="2" ng-model="user.rounds[8][match[0] + '-' + match[1]][match[1] + 'p']"/> {{round8Team(match[1]) | unabbreviate}}
+      </pre>
       <img ng-src="{{round8Team(match[1]) | teamImage}}"/>
     </pre>
   </div>
@@ -35,7 +43,23 @@
     <pre>
       <img ng-src="{{round4Team(match[0]) | teamImage}}"/>
       <span ng-bind-html="round4Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[1]]"/> {{round4Team(match[1]) | unabbreviate}}
+      <pre ng-if="user.rounds[8][match[0] + '-' + match[1]][match[0]] == user.rounds[8][match[0] + '-' + match[1]][match[1]]">
+        <p>Penalties:</p>
+        <span ng-bind-html="round4Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[0] + 'p']"/> : <input type="num" size="2" ng-model="user.rounds[4][match[0] + '-' + match[1]][match[1] + 'p']"/> {{round4Team(match[1]) | unabbreviate}}
+      </pre>
       <img ng-src="{{round4Team(match[1]) | teamImage}}"/>
+    </pre>
+  </div>
+  <h2>3rd Place</h2>
+  <div ng-if="user" ng-repeat="match in rounds.rounds[3]">
+    <pre>
+      <img ng-src="{{round3Team(match[0]) | teamImage}}"/>
+      <span ng-bind-html="round3Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[3][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[3][match[0] + '-' + match[1]][match[1]]"/> {{round3Team(match[1]) | unabbreviate}}
+      <pre ng-if="user.rounds[3][match[0] + '-' + match[1]][match[0]] == user.rounds[3][match[0] + '-' + match[1]][match[1]]">
+        <p>Penalties:</p>
+        <span ng-bind-html="round3Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[3][match[0] + '-' + match[1]][match[0] + 'p']"/> : <input type="num" size="2" ng-model="user.rounds[3][match[0] + '-' + match[1]][match[1] + 'p']"/> {{round3Team(match[1]) | unabbreviate}}
+      </pre>
+      <img ng-src="{{round3Team(match[1]) | teamImage}}"/>
     </pre>
   </div>
   <h2>Final</h2>
@@ -43,6 +67,10 @@
     <pre>
       <img ng-src="{{round2Team(match[0]) | teamImage}}"/>
       <span ng-bind-html="round2Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[0]]"/> : <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[1]]"/> {{round2Team(match[1]) | unabbreviate}}
+      <pre ng-if="user.rounds[2][match[0] + '-' + match[1]][match[0]] == user.rounds[2][match[0] + '-' + match[1]][match[1]]">
+        <p>Penalties:</p>
+        <span ng-bind-html="round2Team(match[0]) | unabbreviate | prepad"></span> <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[0] + 'p']"/> : <input type="num" size="2" ng-model="user.rounds[2][match[0] + '-' + match[1]][match[1] + 'p']"/> {{round2Team(match[1]) | unabbreviate}}
+      </pre>
       <img ng-src="{{round2Team(match[1]) | teamImage}}"/>
     </pre>
   </div>

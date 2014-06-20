@@ -1,10 +1,22 @@
-<h1>Leaderboard</h1>
+<div class="home">
+  <table id="scoreboard">
+  	<colgroup>
+  		<col class="col-one">
+  		<col class="col-two">
+  		<col class="col-three">
+  		<col class="col-four">
+  	</colgroup>
+  	<thead>
+  		<tr> <th>Position <th>Name <th>Points
+  	</thead>
+  	<tbody>
+  		<tr ng-repeat="user in users">
+        <td class="position" ng-bind="user.position">
+        <td class="name" ng-bind="user.name">
+        <td class="points" ng-bind="user.points">
+      </tr>
+  	</tbody>
+  </table>
+</div>
 
-<a ng-click="reloadScores()">reload</a>
-
-<ul>
-  <li ng-repeat="user in users">
-    <h2 ng-bind="user.name"></h2>
-    <h4 ng-bind="user.points"></h4>
-  </li>
-</ul>
+<a class="reload_link" style="cursor:pointer;position:fixed;bottom:5px;right:15px;" ng-click="reloadScores()">&#x267B;</a>
