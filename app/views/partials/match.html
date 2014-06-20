@@ -1,0 +1,22 @@
+<table id="matchtable">
+  <thead>
+    <tr>
+      <th>
+        <img ng-src="{{teamA | teamImage}}"><br>
+        {{teamA | unabbreviate}}
+      </th>
+      <th></th>
+      <th>
+        <img ng-src="{{teamB | teamImage}}"><br>
+        {{teamB | unabbreviate}}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="user in users" ng-class="user.classes">
+      <td ng-bind="user.teamA.score">
+      <td class="name">{{user.name}}<span ng-if="name != 'Actual' && user.points > 0"> +{{user.points}}</span></td>
+      <td ng-bind="user.teamB.score">
+    </tr>
+  </tbody>
+</table>
