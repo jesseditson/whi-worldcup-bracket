@@ -13,7 +13,7 @@ angular.module('worldCupStandingsApp')
             teamA : abbr[0],
             teamB : abbr[1],
             link : '/match/' + group + '/' + match
-            });
+          });
         });
       });
       $scope.links = links;
