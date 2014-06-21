@@ -71,7 +71,7 @@ angular.module('worldCupStandingsApp')
         }
         return user;
       }).sort(function(a,b){
-        return a.points < b.points;
+        return b.points - a.points;
       });
       $scope.users.unshift(actual);
       $scope.users.map(function(user){

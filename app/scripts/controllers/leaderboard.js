@@ -30,7 +30,7 @@ angular.module('worldCupStandingsApp')
         });
       });
       $scope.users = users.sort(function(a,b){
-        return a.points < b.points;
+        return b.points - a.points;
       }).map(function(user,index){
         user.position = index + 1;
         return user;
