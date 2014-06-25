@@ -443,8 +443,12 @@ table {
     color: #ff6699;
 }
 
+.clear {
+	clear: both;
+}
+
 header.masthead {
-    padding: 1em;
+    padding: 0;
     text-align: center;
 }
 
@@ -469,19 +473,32 @@ header.masthead h2 {
   color:#9f9f9f;
 }
 
+nav {
+	width: 60%;
+	margin: 1rem auto;
+}
+
 nav a {
   padding: 1em;
-  color:#d4d4d4;
+  color: #ff6699;
   font-size:1.2em;
+  width: 50%;
+  margin: 0;
+  display: block;
+  box-sizing: border-box;
+  float: left;
+  border-bottom: 1px solid #fff;
 }
+
 #matchtable a:hover,
 nav a:hover {
-  color:#666;
-  text-decoration:none;
+  border-bottom: 1px solid;
+  text-decoration: none;
+  color: rgba(0,0,0,1);
 }
 
 table {
-    width: 60%;
+    width: 80%;
     margin: 0 auto;
 }
 
@@ -499,6 +516,11 @@ table#matchtable tbody td:nth-child(2) {
   font-size:1.2em;
 }
 
+table#scoreboard,
+table#matchtable {
+	margin-bottom: 2rem;
+}
+
 table#scoreboard tbody td.position,
 table#scoreboard tbody td.points,
 table#scoreboard tbody td.change,
@@ -509,20 +531,24 @@ table#matchtable tbody td:last-child {
     text-align: right;
 }
 
+table#scoreboard th {
+	text-transform: uppercase;
+	font-size: .6rem;
+	opacity: 0.5;
+	padding-bottom: 0.3rem;
+	
+}
+
 table#scoreboard col.col-one {
     width: 10%;
 }
 
 table#scoreboard col.col-two {
-    width: 60%;
+    width: 70%;
 }
 
 table#scoreboard col.col-three {
     width: 20%;
-}
-
-table#scoreboard col.col-four {
-    width: 10%;
 }
 
 
@@ -549,6 +575,7 @@ table#matchtable .tie td:last-child {
 
 footer p {
     text-align: center;
+    margin-bottom: 0;
 }
 
 
@@ -562,14 +589,31 @@ footer p {
 
 /* Media queries */
 
-@media (max-width: 1100px) {
+@media (min-width: 800px) {
+	table#scoreboard,
+	table#matchtable,
+	nav {
+		width: 50%;
+	}
 
+	table#scoreboard td {
+		font-size: 1.6rem;
+		font-weight: 100;
+	}
 }
 
-@media (max-width: 980px) {
-
+@media (max-width: 799px) {
+	table#scoreboard,
+	table#matchtable,
+	nav {
+		width: 90%;
+	}
 }
 
-@media (max-width: 480px) {
-
+@media (max-width: 600px) {
+	table#scoreboard,
+	table#matchtable,
+	nav {
+		width: 96%;
+	}
 }
