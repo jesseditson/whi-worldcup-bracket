@@ -439,6 +439,10 @@ table {
 
 /* General Styles - begin */
 
+.container {
+	padding: 0;
+}
+
 .first_place {
     color: #ff6699;
 }
@@ -536,7 +540,7 @@ table#scoreboard th {
 	font-size: .6rem;
 	opacity: 0.5;
 	padding-bottom: 0.3rem;
-	
+	font-weight: bold;
 }
 
 table#scoreboard col.col-one {
