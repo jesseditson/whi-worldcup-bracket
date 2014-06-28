@@ -54,8 +54,122 @@ var teamMap = {
   'BBBE6B39-E345-43C7-9E31-A442A866BF60' : 'rus',
   '8D6EAC04-14E9-4026-BF2A-AB81C4F3C529' : 'kor'
 };
+var defaultRounds = { 32 : {}, 16 : {
+  '1a-2b' : {},
+  '1c-2d' : {},
+  '1b-2a' : {},
+  '1d-2c' : {},
+  '1e-2f' : {},
+  '1g-2h' : {},
+  '1f-2e' : {},
+  '1h-2g' : {}
+}, 8 : {
+  '1a2b-1c2d' : {},
+  '1e2f-1g2h' : {},
+  '1b2a-1d2c' : {},
+  '1f2e-1h2g' : {}
+}, 4 : {
+  '1a2b1c2d-1e2f1g2h' : {},
+  '1b2a1d2c-1f2e1h2g' : {}
+}, 3 : {
+  'a-b' : {}
+}, 2 : {
+  '1a2b1c2d1e2f1g2h-1b2a1d2c1f2e1h2g' : {}
+} };
+
 
 var cli = require.main === module;
+
+var standingPoints = function(standing){
+  var points = 0;
+  points += standing.W * 3;
+  points += standing.D;
+  return points;
+};
+var differential = function(standing){
+  return standing.GF - standing.GA;
+};
+var groupPositions = function(group,rounds){
+  group = group.toUpperCase();
+  var standings = {};
+  var groupScores = rounds[32][group];
+  Object.keys(groupScores).forEach(function(c){
+    var match = groupScores[c];
+    var teams = Object.keys(match);
+    var team1 = teams[0];
+    var team2 = teams[1];
+    if(!standings[team1]){
+      standings[team1] = { 'W' : 0, 'L' : 0, 'D' : 0, 'GF' : 0, 'GA' : 0 };
+    }
+    if(!standings[team2]){
+      standings[team2] = { 'W' : 0, 'L' : 0, 'D' : 0, 'GF' : 0, 'GA' : 0 };
+    }
+    standings[team1].W += match[team1] > match[team2] ? 1 : 0;
+    standings[team1].L += match[team1] < match[team2] ? 1 : 0;
+    standings[team1].D += match[team1] === match[team2] ? 1 : 0;
+    standings[team1].GF += parseInt(match[team1],10);
+    standings[team1].GA += parseInt(match[team2],10);
+
+    standings[team2].W += match[team2] > match[team1] ? 1 : 0;
+    standings[team2].L += match[team2] < match[team1] ? 1 : 0;
+    standings[team2].D += match[team2] === match[team1] ? 1 : 0;
+    standings[team2].GF += parseInt(match[team2],10);
+    standings[team2].GA += parseInt(match[team1],10);
+  });
+  var positions = Object.keys(standings);
+  positions.sort(function(A,B){
+    var teamA = standings[A];
+    var teamB = standings[B];
+    var pointsA = standingPoints(teamA);
+    var pointsB = standingPoints(teamB);
+    if(pointsA === pointsB){
+      // differential matters
+      var diff = differential(teamB) - differential(teamA);
+      if(diff === 0){
+        // GF matters
+        var goals = teamB.GF - teamA.GF;
+        if(goals === 0){
+          console.warn('standings for',A,B,'are exactly tied, but we do not support computing team v team scores yet.');
+          console.log(groupScores[A + '-' + B]);
+        }
+        return goals;
+      } else {
+        return diff;
+      }
+    } else {
+      return pointsB - pointsA;
+    }
+    return ;
+  });
+  return positions;
+};
+
+var round16MatchInfo = function(teamA,teamB,rounds){
+  var teamAPosition;
+  var teamBPosition;
+  ['A','B','C','D','E','F','G','H'].forEach(function(groupName){
+    var group = groupPositions(groupName,rounds);
+    if (group[0] == teamA) {
+      teamAPosition = 1 + groupName.toLowerCase();
+    }
+    if(group[0] == teamB){
+      teamBPosition = 1 + groupName.toLowerCase();
+    }
+    if(group[1] == teamA){
+      teamAPosition = 2 + groupName.toLowerCase();
+    }
+    if(group[1] == teamB){
+      teamBPosition = 2 + groupName.toLowerCase();
+    }
+  });
+  var matchName;
+  if (defaultRounds[16][teamAPosition + '-' + teamBPosition]) {
+    matchName = teamAPosition + '-' + teamBPosition;
+  } else if(defaultRounds[16][teamBPosition + '-' + teamAPosition]) {
+    matchName = teamBPosition + '-' + teamAPosition;
+  }
+  return { teamA : teamAPosition, teamB : teamBPosition, name : matchName};
+};
 
 var updateScores = function(cb){
   if(cli){ console.log('updating...'); }
@@ -63,24 +177,38 @@ var updateScores = function(cb){
     if (err) {
       console.log('error:',err);
     } else {
-      Rounds.findOne({master : true},function(err,rounds){
+      Rounds.findOne({master : true},function(err,dbRounds){
+        var rounds = dbRounds.toObject();
         var matches = JSON.parse(body);
+        var changed = false;
         matches.forEach(function(match){
           var teamA = teamMap[match.awayTeamId];
           var teamB = teamMap[match.homeTeamId];
-          console.log('home',teamB,'away',teamB,match);
-          if(match.status !== 'Pre-game'){
+          if(match.status !== 'Pre-game' && match.group){
+            changed = true;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
+          } else if(match.status !== 'Pre-game'){
+            changed = true;
+            var matchInfo = round16MatchInfo(teamA,teamB,rounds);
+            if(matchInfo){
+              rounds[16] = rounds[16] || {};
+              rounds[16][matchInfo.name] = rounds[16][matchInfo.name] || {};
+              rounds[16][matchInfo.name][matchInfo.teamA] = match.awayScore;
+              rounds[16][matchInfo.name][matchInfo.teamB] = match.homeScore;
+            }
           }
         });
-        rounds.save(function(err){
-          if(cli){
-            console.log('updated.');
-          } else if(cb) {
-            cb(err);
-          }
-        });
+        if(changed){
+          console.log(rounds);
+          dbRounds.save(function(err){
+            if(cli){
+              console.log('updated.');
+            } else if(cb) {
+              cb(err);
+            }
+          });
+        }
       });
     }
   });
