@@ -149,16 +149,16 @@ var round16MatchInfo = function(teamA,teamB,rounds){
   var teamBPosition;
   ['A','B','C','D','E','F','G','H'].forEach(function(groupName){
     var group = groupPositions(groupName,rounds);
-    if (group[0] == teamA) {
+    if (group[0] === teamA) {
       teamAPosition = 1 + groupName.toLowerCase();
     }
-    if(group[0] == teamB){
+    if(group[0] === teamB){
       teamBPosition = 1 + groupName.toLowerCase();
     }
-    if(group[1] == teamA){
+    if(group[1] === teamA){
       teamAPosition = 2 + groupName.toLowerCase();
     }
-    if(group[1] == teamB){
+    if(group[1] === teamB){
       teamBPosition = 2 + groupName.toLowerCase();
     }
   });
@@ -168,18 +168,21 @@ var round16MatchInfo = function(teamA,teamB,rounds){
   } else if(defaultRounds[16][teamBPosition + '-' + teamAPosition]) {
     matchName = teamBPosition + '-' + teamAPosition;
   }
-  return { teamA : teamAPosition, teamB : teamBPosition, name : matchName};
+  return { teamA : teamAPosition, teamB : teamBPosition, name : matchName };
 };
 
 var updateScores = function(cb){
   if(cli){ console.log('updating...'); }
   request('http://worldcup.kimonolabs.com/api/matches?apikey=bda7915d7e614641230a2e1ad896985c',function(err,res,body){
+    try {
+      var matches = JSON.parse(body);
+    } catch (e) {
+      err = e;
+    }
     if (err) {
       console.log('error:',err);
     } else {
-      Rounds.findOne({master : true},function(err,dbRounds){
-        var rounds = dbRounds.toObject();
-        var matches = JSON.parse(body);
+      Rounds.findOne({master : true},function(err,rounds){
         var changed = false;
         matches.forEach(function(match){
           var teamA = teamMap[match.awayTeamId];
@@ -188,20 +191,27 @@ var updateScores = function(cb){
             changed = true;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
-          } else if(match.status !== 'Pre-game'){
+          } else {
+            console.log('match:',match);
             changed = true;
-            var matchInfo = round16MatchInfo(teamA,teamB,rounds);
+            var matchInfo = round16MatchInfo(teamA,teamB,rounds.toObject());
+            console.log('match info',matchInfo,rounds.toObject());
             if(matchInfo){
               rounds[16] = rounds[16] || {};
               rounds[16][matchInfo.name] = rounds[16][matchInfo.name] || {};
-              rounds[16][matchInfo.name][matchInfo.teamA] = match.awayScore;
-              rounds[16][matchInfo.name][matchInfo.teamB] = match.homeScore;
+              rounds[16][matchInfo.name][matchInfo.teamA] = rounds[16][matchInfo.name][matchInfo.teamA] || {};
+              rounds[16][matchInfo.name][matchInfo.teamA].team = teamA;
+              rounds[16][matchInfo.name][matchInfo.teamA].score = match.awayScore;
+              rounds[16][matchInfo.name][matchInfo.teamB] = rounds[16][matchInfo.name][matchInfo.teamB] || {};
+              rounds[16][matchInfo.name][matchInfo.teamB].team = teamB;
+              rounds[16][matchInfo.name][matchInfo.teamB].score = match.homeScore;
+              console.log('round info: ',rounds[16][matchInfo.name]);
             }
           }
         });
         if(changed){
           console.log(rounds);
-          dbRounds.save(function(err){
+          rounds.save(function(err){
             if(cli){
               console.log('updated.');
             } else if(cb) {
