@@ -162,7 +162,9 @@ angular.module('worldCupStandingsApp')
           console.log(user.name,'got +2 from',userTeamB,'getting out of group');
           user.points += 2;
         }
-        if(teamAInfo.score && teamBInfo.score && teamAInfo.penalties && teamBInfo.penalties){
+      });
+      users.forEach(function(user){
+        if(teamAInfo.score !== teamBInfo.score || teamAInfo.penalties !== teamBInfo.penalties){
           // this team has finished their match
           var userScores = user.rounds[16][match];
           if(!userScores){
@@ -170,12 +172,11 @@ angular.module('worldCupStandingsApp')
             return;
           }
           if(userScores[teamA] === teamAInfo.score && userScores[teamB] === teamBInfo.score){
-            console.log(user.name,'got scoreline correct for',match);
             if(teamAInfo.score === teamBInfo.score){
               console.error('unable to compute winner for',teamAInfo.team,'vs',teamBInfo.team,'as user penalty predictions are not recorded yet.');
             } else {
-              // TODO: move this to the round of 8 calculation if kimono adds those games
-              user.points += 2;
+              console.log(user.name,'got exact scoreline correct for',match);
+              user.points += 1;
             }
           } else {
             console.log(user.name,'missed scoreline for',match);
@@ -183,6 +184,57 @@ angular.module('worldCupStandingsApp')
         }
       });
     });
+    console.log('------------ Round of 8 -------------');
+    var round8Teams = [];
+    Object.keys(rounds[8] || {}).forEach(function(match){
+      var matchInfo = rounds[8][match];
+      var teamA = Object.keys(matchInfo)[0];
+      var teamB = Object.keys(matchInfo)[1];
+      var teamAInfo = matchInfo[teamA];
+      var teamBInfo = matchInfo[teamB];
+      round8Teams.push(teamAInfo.team);
+      round8Teams.push(teamBInfo.team);
+    });
+    Object.keys(rounds[8]).forEach(function(match){
+      var matchInfo = rounds[8][match];
+      var teamA = Object.keys(matchInfo)[0];
+      var teamB = Object.keys(matchInfo)[1];
+      var teamAInfo = matchInfo[teamA];
+      var teamBInfo = matchInfo[teamB];
+      users.forEach(function(user){
+        var userTeamA = round16Team(teamA,rounds,user);
+        var userTeamB = round16Team(teamB,rounds,user);
+        if (round8Teams.indexOf(userTeamA) > -1) {
+          console.log(user.name,'got +3 from',userTeamA,'advancing to round of 8');
+          user.points += 3;
+        }
+        if (round8Teams.indexOf(userTeamB) > -1) {
+          console.log(user.name,'got +3 from',userTeamB,'advancing to round of 8');
+          user.points += 3;
+        }
+      });
+      users.forEach(function(user){
+        if(teamAInfo.score !== teamBInfo.score || teamAInfo.penalties !== teamBInfo.penalties){
+          // this team has finished their match
+          var userScores = user.rounds[16][match];
+          if(!userScores){
+            console.warn('NO ROUND 8 SCORE FOR USER: ',user.name);
+            return;
+          }
+          if(userScores[teamA] === teamAInfo.score && userScores[teamB] === teamBInfo.score){
+            if(teamAInfo.score === teamBInfo.score){
+              console.error('unable to compute winner for',teamAInfo.team,'vs',teamBInfo.team,'as user penalty predictions are not recorded yet.');
+            } else {
+              console.log(user.name,'got exact scoreline correct for',match);
+              user.points += 1;
+            }
+          } else {
+            console.log(user.name,'missed scoreline for',match);
+          }
+        }
+      });
+    });
+
     $scope.users = users.sort(function(a,b){
       return b.points - a.points;
     }).map(function(user,index){

@@ -171,6 +171,46 @@ var round16MatchInfo = function(teamA,teamB,rounds){
   return { teamA : teamAPosition, teamB : teamBPosition, name : matchName };
 };
 
+// var round8MatchInfo = function(teamA,teamB,rounds){
+//   console.log('round 8 teams: ',teamA,teamB);
+//   var round16Match = round16MatchInfo(teamA,teamB,rounds);
+//   var matchInfo = rounds[16][round16Match.name];
+//   var teamA16 = matchInfo[round16Match.teamA];
+//   var teamB16 = matchInfo[round16Match.teamB];
+//   if(teamAInfo.score !== teamBInfo.score || teamAInfo.penalties !== teamBInfo.penalties){
+//     // game has finished, find the winner
+//     var winner;
+//     if(teamA16.score > teamB16.score){
+//       winner = teamA16;
+//     } else if(teamA16.score < teamB16.score){
+//       winner = teamB16;
+//     } else if(teamA16.penalties > teamB16.penalties) {
+//       winner = teamA16;
+//     } else if(teamA16.penalties < teamB16.penalties){
+//       winner = teamB16;
+//     }
+//     console.log(round16Match,winner);
+//   } else {
+//     // game not over yet.
+//     return null;
+//   }
+// };
+
+var updateRounds = function(num,rounds,teamA,teamB,match,matchInfo){
+  if(matchInfo){
+    rounds[num] = rounds[num] || {};
+    rounds[num][matchInfo.name] = rounds[num][matchInfo.name] || {};
+    rounds[num][matchInfo.name][matchInfo.teamA] = rounds[num][matchInfo.name][matchInfo.teamA] || {};
+    rounds[num][matchInfo.name][matchInfo.teamA].team = teamA;
+    rounds[num][matchInfo.name][matchInfo.teamA].score = match.awayScore;
+    rounds[num][matchInfo.name][matchInfo.teamB] = rounds[num][matchInfo.name][matchInfo.teamB] || {};
+    rounds[num][matchInfo.name][matchInfo.teamB].team = teamB;
+    rounds[num][matchInfo.name][matchInfo.teamB].score = match.homeScore;
+    console.log('updating: ',rounds[num][matchInfo.name]);
+  }
+  return rounds;
+};
+
 var updateScores = function(cb){
   if(cli){ console.log('updating...'); }
   request('http://worldcup.kimonolabs.com/api/matches?apikey=bda7915d7e614641230a2e1ad896985c',function(err,res,body){
@@ -183,42 +223,26 @@ var updateScores = function(cb){
       console.log('error:',err);
     } else {
       Rounds.findOne({master : true},function(err,rounds){
-        var changed = false;
         matches.forEach(function(match){
           var teamA = teamMap[match.awayTeamId];
           var teamB = teamMap[match.homeTeamId];
           if(match.status !== 'Pre-game' && match.group){
-            changed = true;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
             (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
           } else {
-            console.log('match:',match);
-            changed = true;
-            var matchInfo = round16MatchInfo(teamA,teamB,rounds.toObject());
-            console.log('match info',matchInfo,rounds.toObject());
-            if(matchInfo){
-              rounds[16] = rounds[16] || {};
-              rounds[16][matchInfo.name] = rounds[16][matchInfo.name] || {};
-              rounds[16][matchInfo.name][matchInfo.teamA] = rounds[16][matchInfo.name][matchInfo.teamA] || {};
-              rounds[16][matchInfo.name][matchInfo.teamA].team = teamA;
-              rounds[16][matchInfo.name][matchInfo.teamA].score = match.awayScore;
-              rounds[16][matchInfo.name][matchInfo.teamB] = rounds[16][matchInfo.name][matchInfo.teamB] || {};
-              rounds[16][matchInfo.name][matchInfo.teamB].team = teamB;
-              rounds[16][matchInfo.name][matchInfo.teamB].score = match.homeScore;
-              console.log('round info: ',rounds[16][matchInfo.name]);
-            }
+            var round16Info = round16MatchInfo(teamA,teamB,rounds.toObject());
+            rounds = updateRounds(16,rounds,teamA,teamB,match,round16Info);
+            // rounds = updateRounds(8,rounds,teamA,teamB,match,round8MatchInfo(teamA,teamB,rounds.toObject()));
           }
         });
-        if(changed){
-          console.log(rounds);
-          rounds.save(function(err){
-            if(cli){
-              console.log('updated.');
-            } else if(cb) {
-              cb(err);
-            }
-          });
-        }
+        // console.log(rounds);
+        rounds.save(function(err){
+          if(cli){
+            console.log('updated.');
+          } else if(cb) {
+            cb(err);
+          }
+        });
       });
     }
   });
