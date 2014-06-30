@@ -226,13 +226,17 @@ var updateScores = function(cb){
         matches.forEach(function(match){
           var teamA = teamMap[match.awayTeamId];
           var teamB = teamMap[match.homeTeamId];
-          if(match.status !== 'Pre-game' && match.group){
-            (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
-            (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
+          if(teamA && teamB){
+            if(match.status !== 'Pre-game' && match.group){
+              (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamA] = match.awayScore;
+              (rounds[32][match.group][teamA + '-' + teamB] || rounds[32][match.group][teamB + '-' + teamA])[teamB] = match.homeScore;
+            } else {
+              var round16Info = round16MatchInfo(teamA,teamB,rounds.toObject());
+              rounds = updateRounds(16,rounds,teamA,teamB,match,round16Info);
+              // rounds = updateRounds(8,rounds,teamA,teamB,match,round8MatchInfo(teamA,teamB,rounds.toObject()));
+            }
           } else {
-            var round16Info = round16MatchInfo(teamA,teamB,rounds.toObject());
-            rounds = updateRounds(16,rounds,teamA,teamB,match,round16Info);
-            // rounds = updateRounds(8,rounds,teamA,teamB,match,round8MatchInfo(teamA,teamB,rounds.toObject()));
+            console.log('unknown teams in match : ',match);
           }
         });
         // console.log(rounds);

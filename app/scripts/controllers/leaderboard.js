@@ -167,6 +167,7 @@ angular.module('worldCupStandingsApp')
         if(teamAInfo.score !== teamBInfo.score || teamAInfo.penalties !== teamBInfo.penalties){
           // this team has finished their match
           var userScores = user.rounds[16][match];
+          console.log(user.name,'guessed',teamAInfo.team,':',userScores[teamA],',',teamBInfo.team,':',userScores[teamB]);
           if(!userScores){
             console.warn('NO ROUND 16 SCORE FOR USER: ',user.name);
             return;
@@ -216,9 +217,9 @@ angular.module('worldCupStandingsApp')
       users.forEach(function(user){
         if(teamAInfo.score !== teamBInfo.score || teamAInfo.penalties !== teamBInfo.penalties){
           // this team has finished their match
-          var userScores = user.rounds[16][match];
+          var userScores = user.rounds[8][match];
           if(!userScores){
-            console.warn('NO ROUND 8 SCORE FOR USER: ',user.name);
+            console.log('NO ROUND 8 SCORE FOR USER: ',user.name);
             return;
           }
           if(userScores[teamA] === teamAInfo.score && userScores[teamB] === teamBInfo.score){
