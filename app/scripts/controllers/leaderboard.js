@@ -56,7 +56,7 @@ var groupPositions = function(group,rounds,user){
         // GF matters
         var goals = teamB.GF - teamA.GF;
         if(goals === 0){
-          console.warn('standings for',A,B,'are exactly tied, but we do not support computing team v team scores yet.');
+          // console.warn('standings for',A,B,'are exactly tied, but we do not support computing team v team scores yet.');
           // console.log(groupScores[A + '-' + B]);
         }
         return goals;
