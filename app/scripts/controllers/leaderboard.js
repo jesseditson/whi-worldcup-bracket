@@ -343,6 +343,29 @@ angular.module('worldCupStandingsApp')
           } else {
             console.log(user.name,'missed scoreline for',match);
           }
+          var userTeamA = round2Team(teamA,rounds,user);
+          var userTeamB = round2Team(teamB,rounds,user);
+          var winner;
+          var userWinner;
+          if(teamAInfo.score > teamBInfo.score){
+            console.log(teamAInfo.team, 'is the world cup champion.');
+            console.log(user.name,'picked',userTeamA);
+            winner = teamAInfo.team;
+          } else if (teamAInfo.score < teamBInfo.score){
+            console.log(teamBInfo.team, 'is the world cup champion.');
+            winner = teamBInfo.team
+          }
+          if(userScores[teamA] > userScores[teamB]){
+            console.log(user.name,'picked',userTeamA);
+            userWinner = userTeamA;
+          } else if(userScores[teamA] < userScores[teamB]){
+            console.log(user.name,'picked',userTeamB);
+            userWinner = userTeamB;
+          }
+          if(userWinner == winner){
+            console.log(user.name,'correctly picked world cup champion!');
+            user.points += 6;
+          }
         }
       });
     });
